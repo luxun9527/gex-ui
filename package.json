@@ -1,0 +1,31 @@
+{
+  "name": "gex-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode dev",
+    "prod": "vite --mode prod",
+    "build": "vite build --mode prod"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.6.7",
+    "element-plus": "^2.5.3",
+    "mitt": "^3.0.1",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.2",
+    "@vue-macros/reactivity-transform": "^0.4.3",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "sass": "^1.70.0",
+    "unplugin-auto-import": "^0.17.4",
+    "vite": "^5.0.8",
+    "vue-router": "^4.2.5"
+  }
+}
