@@ -3,6 +3,8 @@ import { onMounted, ref } from "vue";
 import { createChart } from "lightweight-charts";
 let chart;
 const chartContainer = ref();
+let cycleList =$ref(['1分钟','5分钟','15分钟','30分钟','60分钟','日线','周线','月线'])
+let activeIndex = $ref(0)
 
 onMounted(() => {
   chart = createChart(chartContainer.value)
@@ -75,19 +77,16 @@ onMounted(() => {
   chart.timeScale().fitContent();
 
 });
+const changeBtnStatus =(index)=>{
+  activeIndex = index
+}
 </script>
 
 <template>
-    <div class="border-b-4 border-b-gray-500  border-opacity-30 border-solid">
-      <el-button type="text">1分钟</el-button>
-      <el-button type="text">5分钟</el-button>
-      <el-button type="text">10分钟</el-button>
-      <el-button type="text">1小时</el-button>
-      <el-button type="text">1日</el-button>
-      <el-button type="text">1周</el-button>
-      <el-button type="text">1月</el-button>
-
+    <div class="border-b-1 border-b-gray-500  border-opacity-30 border-solid min-h-10 flex pl-4">
+      <el-button  v-for="(item, index) in cycleList" @click="changeBtnStatus(index)" :class="activeIndex === index ? 'el-button--text-active' : ''" type="text">{{item  }}</el-button>
     </div>
+
     <div class="lw-chart" ref="chartContainer"></div>
 
 </template>
@@ -95,5 +94,36 @@ onMounted(() => {
 <style scoped>
 .lw-chart {
   height: 60%;
+}
+.el-button--text{
+  font-size: 16px;
+  color: #000000;
+  text-align: center;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.el-button--text:hover{
+  background-color: #e5e5e5;
+  color: #000000;
+}
+.el-button--text-active{
+  background-color: #e5e5e5;
+  color: #000000;
+  font-size: 16px;
+  color: #000000;
+  text-align: center;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 2.5rem;
+  margin: 0;
+  padding: 0;
 }
 </style>

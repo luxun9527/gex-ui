@@ -11,5 +11,7 @@
 </template>
 
 <style scoped>
-
+.el-button--text{
+  
+}
 </style>
