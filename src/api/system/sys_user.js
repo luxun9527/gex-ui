@@ -9,17 +9,17 @@ export const login = (data) => {
 }
 
 
-export const getCoinList = (params) => {
+export const getTickerList = (data) => {
   return request({
-    url: '/get_coin_list',
-    method: 'get',
-    params,
+    url: '/quotes/v1/get_ticker_list',
+    method: 'post',
+    data,
   })
 }
 
-export const addSymbol = (data) => {
+export const createOrder = (data) => {
   return request({
-    url: '/add_symbol',
+    url: '/order/v1/create_order',
     method: 'post',
     data,
   })

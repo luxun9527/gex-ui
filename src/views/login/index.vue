@@ -2,7 +2,7 @@
   <el-row class="min-h-screen bg-dark-500">
     <el-col :span="10" class="flex justify-center items-center flex-col">
       <div>
-        <div class="font-bold text-5xl text-light-50 mb-4">欢迎光临gex</div>
+        <div class="font-bold text-5xl text-light-500 mb-4">欢迎光临gex</div>
       </div>
     </el-col>
     <el-col

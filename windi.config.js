@@ -1,15 +1,17 @@
-export default {
+// @ts-check - enable TS check for js file
+import { defineConfig } from 'windicss/helpers'
+
+export default defineConfig({
   theme: {
-    textColor: {
-      primary: '#3490dc',
-      secondary: '#ffed4a',
-      'light-ok': '#ffffff',
+    extend: {
+      minWidth: {
+        p45: '45%',
+        vw30: '30vw',
+      },
+      minHeight: {
+        p45: '45%',
+        vw30: '20vw',
+      }
     },
-    backgroundColor: theme => ({
-      ...theme('colors'),
-      primary: '#3490dc',
-      secondary: '#ffed4a',
-      'dark-ok': '#121212',
-    }),
   },
-}
+})
