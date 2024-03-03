@@ -1,18 +1,16 @@
 import { createApp } from 'vue'
-import './style.css'
 import 'element-plus/dist/index.css'
-
-import App from './App.vue'
-
-
-const app = createApp(App)
-
-import router from '@/router'
-app.use(router)
-
-
+import 'virtual:windi.css'
 import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import router from '@/router'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+import { createPersistedState } from 'pinia-plugin-persistedstate';
+import App from './App.vue'
+
+const app = createApp(App)
+app.use(router)
+
 app.use(ElementPlus, {
     locale: zhCn,
 })
@@ -21,7 +19,6 @@ app.use(ElementPlus, {
 import { createPinia } from 'pinia'
 const pinia = createPinia()
 // 持久化存储
-import { createPersistedState } from 'pinia-plugin-persistedstate';
 pinia.use(
     createPersistedState({
         auto: true, // 启用所有 Store 默认持久化
@@ -38,7 +35,6 @@ pinia.use(({ store }) => {
 app.use(pinia)
 
 // 注册所有图标
-import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);
 }

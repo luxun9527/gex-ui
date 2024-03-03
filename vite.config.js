@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import * as path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
+import WindiCSS from 'vite-plugin-windicss'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -17,6 +18,8 @@ export default defineConfig(({ mode }) => {
       AutoImport({
         imports: ['vue', 'vue-router'],
       }),
+      WindiCSS(),
+      
     ],
     // 反向代理解决跨域问题
     server: {
