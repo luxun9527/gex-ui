@@ -25,25 +25,35 @@ export const createOrder = (data) => {
   })
 }
 
-export const getSymbolList = (params) => {
+export const getOrderList = (data) => {
   return request({
-    url: '/get_symbol_list',
-    method: 'get',
-    params,
-  })
-}
-
-export const addCoin = (data) => {
-  return request({
-    url: '/add_coin',
+    url: '/order/v1/get_order_list',
     method: 'post',
     data,
   })
 }
 
-export const updateCoin = (data) => {
+export const getDepthList = (data) => {
   return request({
-    url: '/update_coin',
+    url: '/quotes/v1/get_depth_list',
+    method: 'post',
+    data,
+  })
+}
+
+
+export const getKlineList = (data) => {
+  return request({
+    url: '/quotes/v1/get_kline_list',
+    method: 'post',
+    data,
+  })
+}
+
+
+export const getTickList = (data) => {
+  return request({
+    url: '/quotes/v1/get_tick_list',
     method: 'post',
     data,
   })

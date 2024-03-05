@@ -11,6 +11,8 @@ export default defineConfig({
       minHeight: {
         p45: '45%',
         vw30: '20vw',
+        p20: '20%',
+        p30: '30%',
       }
     },
   },

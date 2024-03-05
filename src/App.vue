@@ -12,7 +12,6 @@
 <style scoped>
 #app {
   height: 100%;
-  overflow: hidden;
   font-weight: 400 !important;
 }
 body,html{

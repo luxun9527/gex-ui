@@ -1,23 +1,23 @@
 <script setup>
 import { getTickerList } from '@/api/system/sys_user';
+import { useTickerStore } from "@/store/modules/ticker";
 
-
+const tickerStore = useTickerStore()
 let tableData = $ref([]);
 
 const getTableData = async(symbol) => {
-  
   return await getTickerList({symbol:'BTC_USDT'})
-  
 }
 onMounted(async() => {
   const td = await getTableData()
   tableData = td.data.ticker_list
+  tickerStore.ticker = tableData[0]
 })
 </script>
 
 <template>
   <div
-    class="border-l-4 border-r-4 border-l-gray-500 border-r-gray-500 border-opacity-30 border-solid"
+    class="border-l-4 border-l-gray-500 border-r-gray-500 border-r-4  border-opacity-30 border-solid min-h-full"
   >
     <el-table
       header-row-class-name="tableRowClassName"

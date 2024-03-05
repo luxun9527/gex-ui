@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {useUserStore} from '@/store/modules/user'
-import { localStorage } from '@/utils/storage';
 import router from '@/router/index'
 import { emitter } from '@/utils/bus.js'
 
@@ -32,30 +31,27 @@ const closeLoading = () => {
     }
 }
 
-// 请求拦截器
-service.interceptors.request.use(
-    // (config) => {
-    //     if (!config.headers) {
-    //         throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
-    //     }
-    //
-    //     const { isLogin, tokenObj } = toRefs(store.user.useUserStore());
-    //
-    //     if (isLogin.value) {
-    //         // 授权认证
-    //         config.headers[tokenObj.value.tokenName] = tokenObj.value.tokenValue;
-    //         // 租户ID
-    //         config.headers['TENANT_ID'] = '1';
-    //         // 微信公众号appId
-    //         config.headers['appId'] = localStorage.get('appId');
-    //     }
-    //     return config;
-    // },
-    // (error) => {
-    //     return Promise.reject(error);
-    // },
-);
 
+service.interceptors.request.use(
+    config => {
+      const userStore = useUserStore()
+      config.headers = {
+        'Content-Type': 'application/json',
+        'gexToken': userStore.token,
+        'gexUserId': userStore.userInfo.uid,
+        ...config.headers
+      }
+      return config
+    },
+    error => {
+      ElMessage({
+        showClose: true,
+        message: error,
+        type: 'error'
+      })
+      return error
+    }
+  )
 // 响应拦截器
 service.interceptors.response.use(
     (response) => {
