@@ -11,7 +11,7 @@
 
 <style scoped>
 #app {
-  height: 100%;
+  //height: 100%;
   font-weight: 400 !important;
 }
 body,html{

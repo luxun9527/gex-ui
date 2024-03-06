@@ -59,14 +59,13 @@ export const getTickList = (data) => {
   })
 }
 
-export const getErrorCodeList = (params) => {
+export const cancelOrder = (data) => {
   return request({
-    url: '/get_error_code_list',
-    method: 'get',
-    params,
-  });
+    url: '/order/v1/cancel_order',
+    method: 'post',
+    data,
+  })
 }
-
 export const addErrorCode = (data) => {
   return request({
     url: '/add_error_code',

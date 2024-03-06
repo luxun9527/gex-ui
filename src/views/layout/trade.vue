@@ -1,6 +1,9 @@
 <script setup>
 import { createOrder } from '@/api/system/sys_user';
 import {ElMessage} from "element-plus";
+import {useUserStore} from '@/store/modules/user'
+import router from "@/router/index.js";
+const userStore = useUserStore()
 
 
 const limitOrderBuyFormRef = $ref({})
@@ -59,12 +62,15 @@ function validateNumber(rule, value, callback) {
 
 
 const submitForm = async(orderType) => {
-  console.log(orderType)
+  if (!userStore.isLogin) {
+    await router.push({ name: 'login' })
+    return
+  }
   let data = {
     symbol_id: 14,
     symbol_name: 'BTC_USDT',
-    price: '',
-    qty: '',
+    price: '0',
+    qty: '0',
     amount: '',
     side: '',
     order_type: ''
@@ -77,7 +83,6 @@ const submitForm = async(orderType) => {
       data.side = buy
       data.order_type = lo
        valid  =await limitOrderBuyFormRef.validate()
-
       break
     case loSell:
       console.log(loSell)
@@ -206,7 +211,7 @@ const changeInput = (orderType,formField) => {
               color="#ef6f8a"
               @click="submitForm(loBuy)"
               round
-              >买入</el-button
+              >{{ userStore.isLogin ? '买入':'登录' }}</el-button
             >
           </el-form>
           <el-form class="min-w-p45 mr-8" ref="limitOrderSellFormRef" :model="limitOrderSellForm" :rules="limitOrderSellFormRules">
@@ -237,11 +242,56 @@ const changeInput = (orderType,formField) => {
               color="#58ca82"
               round
               @click="submitForm(loSell)"
-              >卖出</el-button
+              >{{ userStore.isLogin ? '卖出':'登录' }}</el-button
             >
           </el-form>
       </el-tab-pane>
-      <el-tab-pane label="市价委托" name="mo">Task</el-tab-pane>
+      <el-tab-pane label="市价委托" class="flex justify-between  items-center min-w-full" name="mo">
+        <el-form class="min-w-p45 ml-8"  ref="markerOrderBuyFormRef" :model="markerOrderBuyForm" :rules="markerOrderBuyFormRules">
+          <el-form-item  prop="price">
+            <el-input
+                size="large"
+                v-model="markerOrderBuyForm.amount"
+                placeholder="金额"
+                maxlength="30"
+                class="mb-2"
+                @input="changeInput(moBuy,formFieldPrice)"
+            />
+          </el-form-item>
+          <el-button
+              type="primary"
+              style="width: 100%"
+              size="large"
+              color="#ef6f8a"
+              @click="submitForm(moBuy)"
+              round
+          >{{ userStore.isLogin ? '买入':'登录' }}</el-button
+          >
+        </el-form>
+        <el-form class="min-w-p45 mr-8" ref="markerOrderSellFormRef" :model="markerOrderSellForm" :rules="markerOrderSellFormRules">
+
+          <el-form-item prop="qty">
+            <el-input
+                size="large"
+                v-model="markerOrderSellForm.qty"
+                placeholder="数量"
+                class="mb-2"
+                maxlength="30"
+                @input="changeInput(moSell,formFieldQty)"
+            />
+          </el-form-item>
+          <el-button
+              type="primary"
+              style="width: 100%"
+              size="large"
+              color="#58ca82"
+              round
+              @click="submitForm(moSell)"
+          >{{ userStore.isLogin ? '卖出':'登录' }}</el-button
+          >
+        </el-form>
+      </el-tab-pane>
+
     </el-tabs>
   </div>
 </template>

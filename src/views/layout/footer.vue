@@ -1,5 +1,6 @@
 <script setup>
-import {getOrderList} from "@/api/system/sys_user.js";
+import {getOrderList, cancelOrder} from "@/api/system/sys_user.js";
+import {ElMessage} from "element-plus";
 
 const activeName = $ref('current')
 let tableData = $ref([])
@@ -8,32 +9,64 @@ const newCreated = 1
 const partFilled = 2
 const allFilled = 3
 const canceled = 4
-const cancelOrder = () => {
 
+let symbol ='BTC_USDT'
+let id="0"
+let pageSize=5
+const handleCancelOrder = async (index, row) => {
+  const res = await cancelOrder({symbol_name: 'BTC_USDT', id: row.id})
+  if (res.code === 0) {
+    ElMessage.success('取消成功')
+  }
 }
 
-const handlerSwitch = ()=>{
+const handlerSwitch = () => {
 
 }
-onMounted(async ()=>{
-  let s1,s2
-  if (activeName === 'current'){
+let loading =$ref(false)
+const loadingMore = async ()=>{
+  loading = true
+  let s1, s2
+  if (activeName === 'current') {
     s1 = newCreated
     s2 = partFilled
-  }else{
+  } else {
     s1 = allFilled
     s2 = canceled
   }
-  tableData = await getTableData(s1,s2)
+  const d = await getTableData(s1, s2)
+  tableData.push(...d)
+}
+
+let showLoading=$ref(false)
+
+onMounted(async () => {
+  let s1, s2
+  if (activeName === 'current') {
+    s1 = newCreated
+    s2 = partFilled
+  } else {
+    s1 = allFilled
+    s2 = canceled
+  }
+  tableData = await getTableData(s1, s2)
 
 })
+
+
 const getTableData = async (...status) => {
   const orderList = await getOrderList({
     status_list: status,
-    symbol_name: "BTC_USDT"
+    symbol_name: "BTC_USDT",
+    page_size:pageSize,
+    id:id,
   })
+  if (orderList.data.order_list.length > 0){
+    id = orderList.data.order_list[orderList.data.order_list.length-1].id
+  }
+  showLoading = orderList.data.order_list.length < orderList.data.total;
 
-  return  orderList.data.order_list.map((el, i, arr) => {
+  return orderList.data.order_list.map((el, i, arr) => {
     el.side = el.side === 1 ? '买' : '卖'
     el.symbol = el.symbol_name
     el.date = el.created_at
@@ -63,10 +96,9 @@ const getTableData = async (...status) => {
 </script>
 
 <template>
-  <el-footer
-      class="border-l-4 border-t-4 border-r-4 border-t-gray-500 border-l-gray-500 border-r-gray-500 border-opacity-30 border-solid ">
+  <el-footer style="padding:0">
 
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handlerSwitch">
+    <el-tabs  class="border-l-4 border-t-4 border-r-4 border-t-gray-500 border-l-gray-500 border-r-gray-500 border-opacity-30 border-solid " v-model="activeName"  @tab-click="handlerSwitch">
       <el-tab-pane label="当前委托" class="flex justify-between  items-center" name="current">
         <el-table
             :data="tableData"
@@ -109,11 +141,17 @@ const getTableData = async (...status) => {
               label="操作"
           >
             <template #default="scope">
-               <el-button size="small"></el-button>
+              <el-button @click="handleCancelOrder(scope.$index, scope.row)" type="warning" size="small">取消
+              </el-button>
             </template>
           </el-table-column>
           <template v-slot:empty>
-            <div class="noData" >无数据</div>
+            <div class="noData">无数据</div>
+          </template>
+          <template #append>
+            <div class="min-w-full " v-if="showLoading">
+              <el-button  type="text" class="min-w-full min-h-10 " :loading="loading" @click="loadingMore">加载更多</el-button>
+            </div>
           </template>
         </el-table>
       </el-tab-pane>
@@ -127,14 +165,19 @@ const getTableData = async (...status) => {
 </template>
 
 <style scoped>
-:deep(.el-table) .footerTable th{
+:deep(.el-table) .footerTable th {
   font-size: 12px;
-  font-weight:normal;
-  padding:0;
+  font-weight: normal;
+  padding: 0;
 }
-.noData{
+
+.noData {
   font-size: 12px;
-  font-weight:normal;
-  padding:0;
+  font-weight: normal;
+  padding: 0;
 }
+.el-footer{
+
+}
+
 </style>

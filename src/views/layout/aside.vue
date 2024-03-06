@@ -16,13 +16,11 @@ onMounted(async() => {
 </script>
 
 <template>
-  <div
-    class="border-l-4 border-l-gray-500 border-r-gray-500 border-r-4  border-opacity-30 border-solid min-h-p80"
-  >
+  <div>
     <el-table
       header-row-class-name="asideTableClassName"
       :data="tableData"
-      class="min-w-full min-h-screen"
+      class="min-w-full"
     >
       <el-table-column fixed prop="symbol" label="币对" />
       <el-table-column prop="last_price" label="价格" />

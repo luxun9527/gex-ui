@@ -21,10 +21,10 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <div class="border-l-4 border-l-gray-500  border-opacity-30 border-solid min-h-p80">
+  <div class="">
     <el-table
         header-row-class-name="asksTableClassName"
-        :data="asks" class="min-w-full min-h-md"
+        :data="asks" class="min-w-full"
         empty-text="无卖盘"
 
     >
@@ -56,7 +56,7 @@ onMounted(async ()=>{
         empty-text=""
         :data="bids"
          :show-header=false
-        class="min-w-full min-h-screen ">
+        class="min-w-full  ">
       <el-table-column
           prop="price"
           width='100'

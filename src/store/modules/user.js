@@ -7,7 +7,7 @@ import router from '@/router/index'
 * 存储token以及登录认证的相关函数。
 * */
 export const useUserStore = defineStore('user', () => {
-
+  const isLogin = ref(false)
   const userInfo = ref({
     uid: '',
     username:''
@@ -22,6 +22,7 @@ export const useUserStore = defineStore('user', () => {
         userInfo.value.username = res.data.username
         token.value = res.data.token
         await router.push({ name: 'index' })
+        isLogin.value=true
         return true
       }
     } catch (e) {
@@ -37,6 +38,7 @@ export const useUserStore = defineStore('user', () => {
     window.localStorage.clear()
     window.sessionStorage.clear()
     await router.push({ name: 'login' })
+    isLogin.value=false
   }
 
 
@@ -58,6 +60,7 @@ export const useUserStore = defineStore('user', () => {
     //activeColor,
   //  loadingInstance,
    // ClearStorage
-    userInfo
+    userInfo,
+    isLogin
   }
 })

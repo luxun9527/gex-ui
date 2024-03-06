@@ -2,7 +2,6 @@
 import {onMounted, ref} from "vue";
 import {createChart} from "lightweight-charts";
 import {getKlineList} from "@/api/system/sys_user.js";
-import {timestampToDate} from "@/utils/time.js";
 
 let chart;
 const chartContainer = ref();
@@ -36,10 +35,10 @@ const changeBtnStatus = (index) => {
 
 const getTableData = async () => {
   let d =  await getKlineList({
-    "start_time": 1,
-    "end_time": 893185722521,
-    "kline_type": 1,
-    "symbol": "BTC_USDT"
+    start_time: 1,
+    end_time: 893185722521,
+    kline_type: 1,
+    symbol: "BTC_USDT"
   })
 
   d.data.kline_list.forEach(el=>{
@@ -49,6 +48,7 @@ const getTableData = async () => {
     el.low =  parseFloat(el.low)
     el.close = parseFloat(el.close)
   })
+  d.data.kline_list = d.data.kline_list.slice(-40);
   return d
 }
 
@@ -68,7 +68,9 @@ const getTableData = async () => {
 
 <style scoped>
 .lw-chart {
+  width: 100%;
   height: 60%;
+  padding-right: 5px;
 }
 
 .el-button--text {

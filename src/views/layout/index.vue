@@ -5,7 +5,7 @@ import Footer from '@/views/layout/footer.vue'
 </script>
 
 <template>
-  <el-container class="min-h-screen text-light flex-col">
+  <el-container class=" text-light flex-col">
     <Header></Header>
     <Main></Main>
     <Footer></Footer>

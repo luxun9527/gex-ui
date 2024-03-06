@@ -1,15 +1,25 @@
 <script setup>
 import {getTickList} from "@/api/system/sys_user.js";
 
+
 let tableData = $ref([])
 const getTableData = async () => {
   return  await getTickList({
     symbol:'BTC_USDT',
-    level:100,
+    limit:20,
   })
 
 }
+const filledOrderCell = ({rowIndex, columnIndex, row, column})=>{
+  if (row.taker_is_buyer && columnIndex === 0) {
+    return {color :  "#31BD65","font-size":"14px","border":"none"};
+  }
+  if (!row.taker_is_buyer && columnIndex === 0) {
+    return {color : "#EB4F70","font-size":"14px","border":"none"}
+  }
+  return {"border":"none","font-size":"14px"}
 
+}
 onMounted(async ()=>{
   const d  = await getTableData()
   tableData = d.data.tick_list
@@ -17,11 +27,12 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <div class="border-l-4 border-r-4 border-l-gray-500 border-r-gray-500 border-opacity-30 border-solid min-h-80">
+  <div>
     <el-table
         :data="tableData"
         style="width: 100%"
         header-row-class-name="filledOrderListClassName"
+        :cell-style="filledOrderCell"
 
     >
       <el-table-column

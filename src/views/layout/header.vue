@@ -3,14 +3,23 @@
 import { useTickerStore } from "@/store/modules/ticker";
 const tickerStore = useTickerStore()
 import { storeToRefs } from 'pinia'
-
+import {useUserStore} from "@/store/modules/user.js";
+const userStore = useUserStore()
 const {ticker}=storeToRefs(tickerStore)
+const {userInfo}= storeToRefs(userStore)
+
+const logoutCommand = '退出'
+const handleCommand = (command)=>{
+  if (command === logoutCommand) {
+    userStore.LoginOut()
+  }
+}
 
 
 </script>
 
 <template>
-  <el-header class="border-4 border-gray-500  border-opacity-30 border-solid flex items-center">
+  <el-header class="border-4 border-gray-500  border-opacity-30 border-solid flex items-center justify-between">
       <div class="flex flex-row items-center">
          <div>
           <span class="header-item">{{ ticker.symbol }}</span>
@@ -35,6 +44,24 @@ const {ticker}=storeToRefs(tickerStore)
           <span>24小时额(usdt)</span>
           <span>{{ticker.volume}}</span>
         </div>
+
+      </div>
+      <div>
+        <el-dropdown trigger="click" @command="handleCommand" class="userInfo" >
+          <div class="dropdown-select">
+             <span class="el-dropdown-link">
+          {{ userInfo.username }}
+          <el-icon class="el-icon--right">
+            <arrow-down/>
+          </el-icon>
+        </span>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="logout">退出</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
   </el-header>    
 </template>
@@ -46,6 +73,9 @@ const {ticker}=storeToRefs(tickerStore)
     flex-direction: column;
     font-size: 14px;
     align-content: center;
-
+  }
+  .userInfo{
+    font-size: 20px;
+    margin-right: 10px;
   }
 </style>
