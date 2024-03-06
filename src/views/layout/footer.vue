@@ -70,6 +70,7 @@ const getTableData = async (...status) => {
       <el-tab-pane label="当前委托" class="flex justify-between  items-center" name="current">
         <el-table
             :data="tableData"
+            header-row-class-name="footerTable"
             style="width: 100%">
           <el-table-column
               prop="date"
@@ -106,16 +107,14 @@ const getTableData = async (...status) => {
           <el-table-column
               prop="status"
               label="操作"
-
           >
-            <template slot-scope="scope">
-              <el-button
-                  size="mini"
-                  type="danger"
-                  @click="cancelOrder(scope.$index, scope.row)">取消订单
-              </el-button>
+            <template #default="scope">
+               <el-button size="small"></el-button>
             </template>
           </el-table-column>
+          <template v-slot:empty>
+            <div class="noData" >无数据</div>
+          </template>
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="历史委托" class="flex justify-between  items-center" name="history">
@@ -128,5 +127,14 @@ const getTableData = async (...status) => {
 </template>
 
 <style scoped>
-
+:deep(.el-table) .footerTable th{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
+.noData{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
 </style>

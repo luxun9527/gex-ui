@@ -17,10 +17,12 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <div class="border-l-4 border-r-4 border-l-gray-500 border-r-gray-500 border-opacity-30 border-solid min-h-full">
+  <div class="border-l-4 border-r-4 border-l-gray-500 border-r-gray-500 border-opacity-30 border-solid min-h-80">
     <el-table
         :data="tableData"
         style="width: 100%"
+        header-row-class-name="filledOrderListClassName"
+
     >
       <el-table-column
           prop="price"
@@ -34,10 +36,22 @@ onMounted(async ()=>{
           prop="filled_time"
           label="时间">
       </el-table-column>
+      <template v-slot:empty>
+        <div class="noData" >无数据</div>
+      </template>
     </el-table>
   </div>
 </template>
 
 <style scoped>
-
+:deep(.el-table) .filledOrderListClassName th{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
+.noData{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
 </style>

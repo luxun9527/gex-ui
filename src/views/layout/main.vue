@@ -8,12 +8,12 @@ import FilledOrder from '@/views/layout/filledOrder.vue'
 </script>
 
 <template>
-    <el-main>
-      <el-row>
-        <el-col :span="4"><Aside></Aside></el-col>
-        <el-col :span="12"><Kline></Kline><Trade></Trade></el-col>
-        <el-col :span="4"><OrderBook></OrderBook></el-col>
-        <el-col :span="4"><FilledOrder></FilledOrder></el-col>
+    <el-main class="min-h-p80">
+      <el-row class="min-h-p80">
+        <el-col class="min-h-p80" :span="4"><Aside></Aside></el-col>
+        <el-col class="min-h-p80" :span="12"><Kline></Kline><Trade></Trade></el-col>
+        <el-col class="min-h-p80" :span="4"><OrderBook></OrderBook></el-col>
+        <el-col class="min-h-p80" :span="4"><FilledOrder></FilledOrder></el-col>
       </el-row>
     </el-main>
 </template>

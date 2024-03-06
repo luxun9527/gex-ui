@@ -21,27 +21,13 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <div class="border-l-4 border-l-gray-500  border-opacity-30 border-solid">
-    <el-table :data="asks" class="min-w-full">
-      <el-table-column
-          prop="price"
-          width='100'
-          label="价格(usdt)"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="qty"
-          label="数量"
-          width='90'>
-      </el-table-column>
-      <el-table-column
-          prop="amount"
-          min-width="100"
-          label="金额">
-      </el-table-column>
-    </el-table>
+  <div class="border-l-4 border-l-gray-500  border-opacity-30 border-solid min-h-p80">
+    <el-table
+        header-row-class-name="asksTableClassName"
+        :data="asks" class="min-w-full min-h-md"
+        empty-text="无卖盘"
 
-    <el-table :data="bids" class="min-w-full min-h-screen ">
+    >
       <el-table-column
           prop="price"
           width='100'
@@ -58,10 +44,58 @@ onMounted(async ()=>{
           min-width="100"
           label="金额">
       </el-table-column>
+      <template v-slot:empty>
+        <div class="noData" >无数据</div>
+      </template>
+    </el-table>
+    <el-divider>
+      1212.121
+    </el-divider>
+    <el-table
+        header-row-class-name="bidsTableClassName"
+        empty-text=""
+        :data="bids"
+         :show-header=false
+        class="min-w-full min-h-screen ">
+      <el-table-column
+          prop="price"
+          width='100'
+          label="价格(usdt)"
+      >
+      </el-table-column>
+      <el-table-column
+          prop="qty"
+          label="数量"
+          width='90'>
+      </el-table-column>
+      <el-table-column
+          prop="amount"
+          min-width="100"
+          label="金额">
+      </el-table-column>
+      <template v-slot:empty>
+          <div class="noData" >无数据</div>
+      </template>
+
+
     </el-table>
   </div>
 </template>
 
 <style scoped>
-
+:deep(.el-table) .asksTableClassName th{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
+:deep(.el-table) .bidsTableClassName th{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
+.noData{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
 </style>

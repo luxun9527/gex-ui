@@ -13,6 +13,7 @@ export default defineConfig({
         vw30: '20vw',
         p20: '20%',
         p30: '30%',
+        p80: '80%',
       }
     },
   },
