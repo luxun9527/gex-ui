@@ -2,6 +2,7 @@
 import {getTickList} from "@/api/system/sys_user.js";
 
 
+
 let tableData = $ref([])
 const getTableData = async () => {
   return  await getTickList({
@@ -12,15 +13,16 @@ const getTableData = async () => {
 }
 const filledOrderCell = ({rowIndex, columnIndex, row, column})=>{
   if (row.taker_is_buyer && columnIndex === 0) {
-    return {color :  "#31BD65","font-size":"14px","border":"none"};
+    return {color :  "#31BD65","font-size":"12px","border":"none,'padding': '0'"};
   }
   if (!row.taker_is_buyer && columnIndex === 0) {
-    return {color : "#EB4F70","font-size":"14px","border":"none"}
+    return {color : "#EB4F70","font-size":"12px","border":"none,height:1.5rem,'padding': '0'",}
   }
-  return {"border":"none","font-size":"14px"}
+  return {"border":"none","font-size":"12px,height:1.5rem,'padding': '0'"}
 
 }
 onMounted(async ()=>{
+
   const d  = await getTableData()
   tableData = d.data.tick_list
 })
@@ -64,5 +66,10 @@ onMounted(async ()=>{
   font-size: 12px;
   font-weight:normal;
   padding:0;
+}
+
+.el-table{
+  --el-table-border-color:none;
+  --el-table-border : none;
 }
 </style>

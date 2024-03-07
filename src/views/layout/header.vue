@@ -5,8 +5,8 @@ const tickerStore = useTickerStore()
 import { storeToRefs } from 'pinia'
 import {useUserStore} from "@/store/modules/user.js";
 const userStore = useUserStore()
-const {ticker}=storeToRefs(tickerStore)
 const {userInfo}= storeToRefs(userStore)
+const {ticker}=storeToRefs(tickerStore)
 
 const logoutCommand = '退出'
 const handleCommand = (command)=>{

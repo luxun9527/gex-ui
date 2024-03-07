@@ -1,7 +1,8 @@
 <script setup>
 import {getOrderList, cancelOrder} from "@/api/system/sys_user.js";
 import {ElMessage} from "element-plus";
-
+import {useUserStore} from '@/store/modules/user'
+const userStore = useUserStore()
 const activeName = $ref('current')
 let tableData = $ref([])
 
@@ -41,6 +42,9 @@ const loadingMore = async ()=>{
 let showLoading=$ref(false)
 
 onMounted(async () => {
+  if (!userStore.isLogin) {
+    return
+  }
   let s1, s2
   if (activeName === 'current') {
     s1 = newCreated
@@ -141,7 +145,7 @@ const getTableData = async (...status) => {
               label="操作"
           >
             <template #default="scope">
-              <el-button @click="handleCancelOrder(scope.$index, scope.row)" type="warning" size="small">取消
+              <el-button @click="handleCancelOrder(scope.$index, scope.row)" type="warning" size="small">取消订单
               </el-button>
             </template>
           </el-table-column>

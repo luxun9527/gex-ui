@@ -68,7 +68,7 @@ const getTableData = async () => {
 
 <style scoped>
 .lw-chart {
-  width: 100%;
+  width: 99%;
   height: 60%;
   padding-right: 5px;
 }
