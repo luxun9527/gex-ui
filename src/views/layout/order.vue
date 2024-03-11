@@ -3,6 +3,8 @@ import { createOrder } from '@/api/system/sys_user';
 import {ElMessage} from "element-plus";
 import {useUserStore} from '@/store/modules/user'
 import router from "@/router/index.js";
+import { userWebSocket } from "@/store/modules/ws.js"
+const wsStore = userWebSocket()
 const userStore = useUserStore()
 
 
@@ -57,6 +59,7 @@ function validateNumber(rule, value, callback) {
     callback();
   }
 }
+
 
 
 

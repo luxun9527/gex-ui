@@ -2,7 +2,9 @@
 import {getOrderList, cancelOrder} from "@/api/system/sys_user.js";
 import {ElMessage} from "element-plus";
 import {useUserStore} from '@/store/modules/user'
+import {userWebSocket} from "@/store/modules/ws.js";
 const userStore = useUserStore()
+const wsStore = userWebSocket()
 const activeName = $ref('current')
 let tableData = $ref([])
 
@@ -20,7 +22,74 @@ const handleCancelOrder = async (index, row) => {
     ElMessage.success('取消成功')
   }
 }
+const subOrder=()=>{
+  if (userStore.isLogin) {
+    let d = {'code': 3, 'data': userStore.token}
+    wsStore.conn.send(JSON.stringify(d))
+     d = {'code': 5, 'topic':'order@BTC_USDT'}
+    wsStore.conn.send(JSON.stringify(d))
+  }
+}
+/*
+* {
+    "t": "order@BTC_USDT",
+    "p": {
+        "id": "773667510556823552",
+        "oi": "751cf55a-893c-479b-84f6-f572490e5ff4",
+        "sn": "BTC_USDT",
+        "p": "111.000",
+        "q": "1.0000",
+        "a": "111.000",
+        "si": 1,
+        "s": 1,
+        "ot": 2,
+        "fa": "0.000",
+        "fq": "0.0000",
+        "fap": "0.000",
+        "u": "3",
+        "ca": 1710162241
+    }
+}*/
+const orderDataHandler=(resp)=>{
+  switch (resp.p.s){
+    case 1:
+      let order = {
+        'id': resp.p.id,
+        'order_id': resp.p.oi,
+        'user_id': resp.p.u,
+        'symbol': resp.p.sn,
+        'price': resp.p.p,
+        'qty': resp.p.q,
+        'amount': resp.p.a,
+        'side': resp.p.si ===1 ? '买':'卖',
+        'status': resp.p.s,
+        'order_type': resp.p.ot,
+        'filled_qty': resp.p.fq,
+        'filled_amount': resp.p.fa,
+        'filled_avg_price': resp.p.fap,
+        'date': castTimeStamp(resp.p.ca),
+        'filledUnfilled':resp.p.fq+'/'+resp.p.q,
+      }
+      tableData.unshift(order)
+      break
+    case 4:
+      tableData =tableData.filter(el=>{
+        return el.id !== resp.p.id;
+      })
+      break
+    case 2:
+      tableData.forEach(el=>{
+        el.filledUnfilled = resp.p.fq+'/'+el.qty
+      })
+      break
+    case 3:
+      tableData = tableData.filter(el=>{
+        return el.id !== resp.p.id;
+      })
+  }
+}
 
+wsStore.setOrderDataHandler(orderDataHandler)
 const handlerSwitch = () => {
 
 }
@@ -54,7 +123,7 @@ onMounted(async () => {
     s2 = canceled
   }
   tableData = await getTableData(s1, s2)
-
+  subOrder()
 })
 
 

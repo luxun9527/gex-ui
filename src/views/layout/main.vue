@@ -1,7 +1,7 @@
 <script setup>
 import Aside from '@/views/layout/aside.vue'
 import Kline from '@/views/layout/kline.vue'
-import Trade from '@/views/layout/trade.vue'
+import Trade from '@/views/layout/order.vue'
 import OrderBook from '@/views/layout/orderbook.vue'
 import FilledOrder from '@/views/layout/filledOrder.vue'
 

@@ -6,6 +6,8 @@ export const userWebSocket = defineStore('webSocketConn', () => {
     let  klineDataHandler
     let  depthDataHandler
     let  tickDataHandler
+    let  tickerDataHandler
+    let  orderDataHandler
 
     let setKlineDataHandler=(h)=>{
         klineDataHandler=h
@@ -18,6 +20,14 @@ export const userWebSocket = defineStore('webSocketConn', () => {
     let setTickDataHandler=(h)=>{
         tickDataHandler=h
     }
+
+    let setTickerDataHandler=(h)=>{
+        tickerDataHandler = h
+    }
+    let setOrderDataHandler=(h)=>{
+        orderDataHandler = h
+    }
+
 
     const tickTopic = 'tick'
     const tickerTopic = 'ticker'
@@ -51,6 +61,12 @@ export const userWebSocket = defineStore('webSocketConn', () => {
                     case tickTopic:
                         tickDataHandler(resp)
                         break
+                    case tickerTopic:
+                        tickerDataHandler(resp)
+                        break
+                    case orderTopic:
+                        orderDataHandler(resp)
+                        break
                 }
             }
         })
@@ -66,5 +82,7 @@ export const userWebSocket = defineStore('webSocketConn', () => {
         setKlineDataHandler,
         setDepthDataHandler,
         setTickDataHandler,
+        setTickerDataHandler,
+        setOrderDataHandler,
     }
 }, {persist: false})

@@ -1,8 +1,8 @@
 <script setup>
 import { getTickerList } from '@/api/system/sys_user';
 import { useTickerStore } from "@/store/modules/ticker";
-import { userWebSocket } from "@/store/modules/ws.js";
-const wsConn = userWebSocket()
+import { userWebSocket } from "@/store/modules/ws.js"
+const wsStore = userWebSocket()
 const tickerStore = useTickerStore()
 let tableData = $ref([]);
 
@@ -13,9 +13,49 @@ onMounted(async() => {
   const td = await getTableData()
   tableData = td.data.ticker_list
   tickerStore.ticker = tableData[0]
-  const d = {'code': 1, 'topic': 'ticker@BTC_USDT'}
-  wsConn.conn.send(JSON.stringify(d))
+  subTicker()
 })
+//{"t":"ticker@BTC_USDT","p":{"lp":"111.000","h":"1111.000","l":"1111.000","a":"16.0000","v":"8220.000","r":"-90.009","s":"BTC_USDT","l24p":"1111.000"}}
+/* {
+                "last_price": "111.000",
+                "high": "1111.000",
+                "low": "1111.000",
+                "amount": ".0000",
+                "volume": "111.000",
+                "price_range": "-90.009",
+                "last24_price": "1111.000",
+                "symbol": "BTC_USDT"
+            }*/
+const tickerHandler=(data)=>{
+  console.log('data.p',data.p)
+  tableData.forEach(el=>{
+    console.log(el.symbol)
+    if (el.symbol === data.p.s) {
+      console.log('ttttt')
+      el.last_price=data.p.lp
+      el.price_range=data.p.r
+    }
+  })
+  if (data.p.s === tickerStore.ticker.symbol) {
+    tickerStore.ticker={
+      last_price: data.p.lp,
+      high:  data.p.h,
+      low: data.p.low,
+      amount: data.p.a,
+      volume: data.p.v,
+      price_range: data.p.r,
+      last24_price: data.p.l24p,
+      symbol: data.p.s
+    }
+
+  }
+}
+wsStore.setTickerDataHandler(tickerHandler)
+
+const subTicker=()=>{
+  const d = {'code': 1, 'topic': 'ticker@BTC_USDT'}
+  wsStore.conn.send(JSON.stringify(d))
+}
 </script>
 
 <template>
