@@ -32,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
           // 请求接口数据，动态添加可访问路由表
          // await getUserInfo();
           //routerList.value.forEach((e) => router.addRoute(e)); // 路由添加进去之后不会及时更新，需要重新加载一次
-          // console.log('全部路由数据：', router.getRoutes());
+          // g('全部路由数据：', router.getRoutes());
           hasRouter = true;
           next({ ...to, replace: true });
         }

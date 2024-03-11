@@ -1,7 +1,8 @@
 <script setup>
 import { getTickerList } from '@/api/system/sys_user';
 import { useTickerStore } from "@/store/modules/ticker";
-
+import { userWebSocket } from "@/store/modules/ws.js";
+const wsConn = userWebSocket()
 const tickerStore = useTickerStore()
 let tableData = $ref([]);
 
@@ -12,6 +13,8 @@ onMounted(async() => {
   const td = await getTableData()
   tableData = td.data.ticker_list
   tickerStore.ticker = tableData[0]
+  const d = {'code': 1, 'topic': 'ticker@BTC_USDT'}
+  wsConn.conn.send(JSON.stringify(d))
 })
 </script>
 
@@ -20,6 +23,7 @@ onMounted(async() => {
     <el-table
       header-row-class-name="asideTableClassName"
       :data="tableData"
+      :cell-style="{'border': 'none','padding': '2px 0','font-size':'12px ','height':'1.5rem'}"
       class="min-w-full"
     >
       <el-table-column fixed prop="symbol" label="币对" />
@@ -43,5 +47,9 @@ onMounted(async() => {
   font-size: 12px;
   font-weight:normal;
   padding:0;
+}
+.el-table{
+  --el-table-border-color:none;
+  --el-table-border : none;
 }
 </style>

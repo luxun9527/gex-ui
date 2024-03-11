@@ -83,7 +83,6 @@ service.interceptors.response.use(
             closeLoading()
         }
         if (!error.response) {
-            console.log('test')
             ElMessageBox.confirm(`
         <p>检测到请求错误</p>
         <p>${error}</p>

@@ -3,8 +3,10 @@ import {getDepthList} from "@/api/system/sys_user.js";
 import { useTickerStore } from "@/store/modules/ticker";
 import {storeToRefs} from "pinia";
 import {Decimal} from 'decimal.js'
-
+import { userWebSocket } from "@/store/modules/ws.js"
+const wsStore = userWebSocket()
 const tickerStore = useTickerStore()
+const decimalZero = new Decimal(0)
 
 const {ticker}=storeToRefs(tickerStore)
 
@@ -14,11 +16,124 @@ let bids =$ref([])
 const asksType=1
 const bidsType=2
 
-
 //卖盘最大的数量
 let asksMaxQty = $ref( new Decimal(0))
 //买盘最大数量
 let bidsMaxQty = $ref(new Decimal(0))
+
+const subDepth = ()=>{
+  const d = {'code': 1, 'topic': 'depth@BTC_USDT'}
+  wsStore.conn.send(JSON.stringify(d))
+}
+
+const asksFilterEmpty =()=>{
+  asks = asks.filter(el=>{
+      return el.qty!==''
+    })
+}
+
+const asksFilledEmpty = ()=>{
+  let l = asks.length
+  if (l < 15) {
+    for (let i = 0; i < (15-l); i++) {
+      asks.unshift({'price':'','qty':'','amount':''})
+    }
+
+  }
+}
+
+const depthDataHandler =(data)=>{
+  //找到合适的档位替换
+  //如何档位不存在则新增
+  // 更新档位的最大值
+  // 删除档位为0
+
+  asksFilterEmpty()
+
+  data.p.a.forEach( d=>{
+    let existed = false
+    let pos = {}
+    let newAsks = []
+
+    //更新数据，修改档位
+    asks.forEach((el) => {
+      //找到该档位更新
+      if (d[0] === el.price) {
+        el.qty = d[1]
+        el.amount = d[2]
+        existed = true
+      }
+    })
+
+    if (!existed){
+      pos = {'price': d[0], 'qty': d[1], 'amount': d[2]}
+      asks.push(pos)
+    }
+    //找到最大 删除数量为0的
+    asks.forEach(d => {
+      if (new Decimal(d.qty).eq(decimalZero)) {
+        return
+      }
+      let q = new Decimal(d.qty)
+      //更新asksMaxQty最大数量
+      if (q.gt(asksMaxQty)) {
+        asksMaxQty = q
+      }
+      newAsks.push(d)
+    })
+    //排序从大到小
+    asks = newAsks.sort((v1, v2) => {
+      const v1Price = new Decimal(v1.price)
+      const v2Price = new Decimal(v2.price)
+      return -v1Price.comparedTo(v2Price)
+    })
+  })
+
+
+  asksFilledEmpty()
+  //处理卖盘
+  console.log( data.p.b)
+  data.p.b.forEach(d=>{
+    let existed = false
+    let pos = {}
+    let newBids = []
+
+    //更新数据，修改档位
+    bids.forEach((el) => {
+      //找到该档位更新
+      if (d[0] === el.price) {
+        el.qty = d[1]
+        el.amount = d[2]
+        existed = true
+      }
+    })
+
+    if (!existed){
+      pos = {'price': d[0], 'qty': d[1], 'amount': d[2]}
+      bids.push(pos)
+    }
+    //找到最大 删除数量为0的
+    bids.forEach(d => {
+      if (new Decimal(d.qty).eq(decimalZero)) {
+        return
+      }
+      let q = new Decimal(d.qty)
+      //更新asksMaxQty最大数量
+      if (q.gt(asksMaxQty)) {
+        bidsMaxQty = q
+      }
+      newBids.push(d)
+    })
+    //排序从大到小
+    bids = newBids.sort((v1, v2) => {
+      const v1Price = new Decimal(v1.price)
+      const v2Price = new Decimal(v2.price)
+      return -v1Price.comparedTo(v2Price)
+    })
+  })
+}
+
+wsStore.setDepthDataHandler(depthDataHandler)
 
 const getTableData = async () => {
   const data=  await getDepthList({
@@ -27,11 +142,7 @@ const getTableData = async () => {
   })
   calMaxQty(data.data.asks,asksType)
   calMaxQty(data.data.bids,bidsType)
-  if (data.data.asks.length < 15) {
-    for (let i = 0; i < (15-data.data.asks.length)+1; i++) {
-      data.data.asks.unshift({'price':' ','qty':' ','amount':' '})
-    }
-  }
+
   return data
 }
 const calMaxQty = (data,t)=>{
@@ -58,19 +169,23 @@ const  asksListCell = ({rowIndex, columnIndex, row, column})=> {
   if (columnIndex === 0) {
     return {color: "#EB4F70",'text-align':'left','border': 'none','padding': '0','font-size':'12px','height':'1.5rem'}
   }
-  return {'text-align':'right','border': 'none','padding': '2px 0','font-size':'12px ','height':'1.5rem'}
+  return {'text-align':'right','border': 'none','padding': '2px 0','font-size':'12px','height':'1.5rem'}
 }
 onMounted(async ()=>{
   const d = await getTableData()
+
   asks = d.data.asks
   bids = d.data.bids
+  asksFilledEmpty()
+  console.log(asks)
+  subDepth()
 })
 
 const  bidsListCell = ({rowIndex, columnIndex, row, column})=> {
   if (columnIndex === 0) {
-    return {'color': "#31BD65",'text-align':'left','border': 'none','padding': '0','font-size':'12px','height':'1.5rem'}
+    return {'color': "#31BD65",'text-align':'left','border': 'none','padding': '0','font-size':'12px'}
   }
-  return {'text-align':'right','border': 'none','padding': '2px 0','font-size':'12px ','height':'1.5rem'}
+  return {'text-align':'right','border': 'none','padding': '2px 0','font-size':'12px'}
 }
 const  asksListRow=({row, rowIndex})=> {
   if (row.qty === '') {
