@@ -3,6 +3,7 @@ import {getOrderList, cancelOrder} from "@/api/system/sys_user.js";
 import {ElMessage} from "element-plus";
 import {useUserStore} from '@/store/modules/user'
 import {userWebSocket} from "@/store/modules/ws.js";
+import {timestampToDateTime} from "@/utils/time.js";
 const userStore = useUserStore()
 const wsStore = userWebSocket()
 const activeName = $ref('current')
@@ -67,7 +68,7 @@ const orderDataHandler=(resp)=>{
         'filled_qty': resp.p.fq,
         'filled_amount': resp.p.fa,
         'filled_avg_price': resp.p.fap,
-        'date': castTimeStamp(resp.p.ca),
+        'date': timestampToDateTime(resp.p.ca),
         'filledUnfilled':resp.p.fq+'/'+resp.p.q,
       }
       tableData.unshift(order)

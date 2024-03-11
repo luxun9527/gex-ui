@@ -3,8 +3,7 @@ import { createOrder } from '@/api/system/sys_user';
 import {ElMessage} from "element-plus";
 import {useUserStore} from '@/store/modules/user'
 import router from "@/router/index.js";
-import { userWebSocket } from "@/store/modules/ws.js"
-const wsStore = userWebSocket()
+
 const userStore = useUserStore()
 
 
@@ -85,7 +84,9 @@ const submitForm = async(orderType) => {
       data.qty = limitOrderBuyForm.qty
       data.side = buy
       data.order_type = lo
-       valid  =await limitOrderBuyFormRef.validate()
+      valid  =await limitOrderBuyFormRef.validate()
+      unref(limitOrderBuyFormRef).resetFields()
+
       break
     case loSell:
       console.log(loSell)
@@ -94,6 +95,7 @@ const submitForm = async(orderType) => {
       data.side = sell
       data.order_type = lo
       valid = await  limitOrderSellFormRef.validate()
+      unref(limitOrderSellFormRef).resetFields()
 
       break
     case moBuy:
@@ -101,12 +103,15 @@ const submitForm = async(orderType) => {
       data.side = buy
       data.order_type = mo
       valid = await  markerOrderBuyFormRef.validate()
+      unref(markerOrderBuyFormRef).resetFields()
       break
     case moSell:
       data.qty = markerOrderSellForm.qty
       data.side = sell
       data.order_type = mo
       valid = await markerOrderSellFormRef.validate()
+      unref(markerOrderSellFormRef).resetFields()
+
       break
   }
   if(valid){
@@ -114,6 +119,7 @@ const submitForm = async(orderType) => {
     if (res.code === 0) {
       ElMessage.success('下单成功')
     }
+
   }else{
     ElMessage({
       type: "error",

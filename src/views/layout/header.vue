@@ -8,7 +8,7 @@ const userStore = useUserStore()
 const {userInfo}= storeToRefs(userStore)
 const {ticker}=storeToRefs(tickerStore)
 
-const logoutCommand = '退出'
+const logoutCommand = 'logout'
 const handleCommand = (command)=>{
   if (command === logoutCommand) {
     userStore.LoginOut()

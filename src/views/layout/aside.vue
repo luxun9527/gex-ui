@@ -27,11 +27,8 @@ onMounted(async() => {
                 "symbol": "BTC_USDT"
             }*/
 const tickerHandler=(data)=>{
-  console.log('data.p',data.p)
   tableData.forEach(el=>{
-    console.log(el.symbol)
     if (el.symbol === data.p.s) {
-      console.log('ttttt')
       el.last_price=data.p.lp
       el.price_range=data.p.r
     }
@@ -40,7 +37,7 @@ const tickerHandler=(data)=>{
     tickerStore.ticker={
       last_price: data.p.lp,
       high:  data.p.h,
-      low: data.p.low,
+      low: data.p.l,
       amount: data.p.a,
       volume: data.p.v,
       price_range: data.p.r,
