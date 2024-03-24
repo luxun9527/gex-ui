@@ -12,6 +12,8 @@ const {ticker}=storeToRefs(tickerStore)
 
 let asks =$ref([])
 let bids =$ref([])
+let bidsLevel300 =$ref([])
+let asksLevel300 =$ref([])
 
 const asksType=1
 const bidsType=2
@@ -98,7 +100,7 @@ const depthDataHandler =(data)=>{
     let newBids = []
 
     //更新数据，修改档位
-    bids.forEach((el) => {
+    bidsLevel300.forEach((el) => {
       //找到该档位更新
       if (d[0] === el.price) {
         el.qty = d[1]
@@ -109,10 +111,10 @@ const depthDataHandler =(data)=>{
 
     if (!existed){
       pos = {'price': d[0], 'qty': d[1], 'amount': d[2]}
-      bids.push(pos)
+      bidsLevel300.push(pos)
     }
     //找到最大 删除数量为0的
-    bids.forEach(d => {
+    bidsLevel300.forEach(d => {
       if (new Decimal(d.qty).eq(decimalZero)) {
         return
       }
@@ -124,25 +126,25 @@ const depthDataHandler =(data)=>{
       newBids.push(d)
     })
     //排序从大到小
-    bids = newBids.sort((v1, v2) => {
+    bidsLevel300 = newBids.sort((v1, v2) => {
       const v1Price = new Decimal(v1.price)
       const v2Price = new Decimal(v2.price)
       return -v1Price.comparedTo(v2Price)
     })
     //只保留15档删除多的
-    bids = bids.slice(0, 15)
+    bids = bidsLevel300.slice(0, 15)
   })
 }
 
 wsStore.setDepthDataHandler(depthDataHandler)
 
 const getTableData = async () => {
-  const data=  await getDepthList({
+  const data =  await getDepthList({
     symbol:'BTC_USDT',
-    level:15,
+    level:300,
   })
-  calMaxQty(data.data.asks,asksType)
-  calMaxQty(data.data.bids,bidsType)
+  asksLevel300 = data.data.asks
+  bidsLevel300 = data.data.bids
 
   return data
 }
@@ -174,8 +176,10 @@ const  asksListCell = ({rowIndex, columnIndex, row, column})=> {
 }
 onMounted(async ()=>{
   const d = await getTableData()
-  asks = d.data.asks
-  bids = d.data.bids
+  asks = d.data.asks.slice(0, 15)
+  bids = d.data.bids.slice(0, 15)
+  calMaxQty(asks,asksType)
+  calMaxQty(bids,bidsType)
   asksFilledEmpty()
   subDepth()
 })
