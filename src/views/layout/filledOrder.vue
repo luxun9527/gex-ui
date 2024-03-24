@@ -74,6 +74,7 @@ onMounted(async ()=>{
         <div class="noData" >无数据</div>
       </template>
     </el-table>
+
   </div>
 </template>
 

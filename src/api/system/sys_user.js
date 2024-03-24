@@ -32,6 +32,14 @@ export const getOrderList = (data) => {
     data,
   })
 }
+export const getUserAssets = (data) => {
+  return request({
+    url: '/account/v1/get_user_asset_list',
+    method: 'post',
+    data,
+  })
+}
+
 
 export const getDepthList = (data) => {
   return request({

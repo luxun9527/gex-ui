@@ -2,9 +2,12 @@
 import { getTickerList } from '@/api/system/sys_user';
 import { useTickerStore } from "@/store/modules/ticker";
 import { userWebSocket } from "@/store/modules/ws.js"
+import {getUserAssets} from "@/api/system/sys_user.js"
+
 const wsStore = userWebSocket()
 const tickerStore = useTickerStore()
 let tableData = $ref([]);
+let userAssets = $ref([]);
 
 const getTableData = async(symbol) => {
   return await getTickerList({symbol:'BTC_USDT'})
@@ -13,8 +16,13 @@ onMounted(async() => {
   const td = await getTableData()
   tableData = td.data.ticker_list
   tickerStore.ticker = tableData[0]
+  await getAssets()
   subTicker()
 })
+const getAssets=async ()=>{
+  const assets = await getUserAssets()
+  userAssets= assets.data.asset_list
+}
 //{"t":"ticker@BTC_USDT","p":{"lp":"111.000","h":"1111.000","l":"1111.000","a":"16.0000","v":"8220.000","r":"-90.009","s":"BTC_USDT","l24p":"1111.000"}}
 /* {
                 "last_price": "111.000",
@@ -58,10 +66,11 @@ const subTicker=()=>{
 <template>
   <div>
     <el-table
+
       header-row-class-name="asideTableClassName"
       :data="tableData"
       :cell-style="{'border': 'none','padding': '2px 0','font-size':'12px ','height':'1.5rem'}"
-      class="min-w-full"
+      class="min-w-full min-h-screen-sm "
     >
       <el-table-column fixed prop="symbol" label="币对" />
       <el-table-column prop="last_price" label="价格" />
@@ -70,12 +79,24 @@ const subTicker=()=>{
         <div class="noData" >无数据</div>
       </template>
     </el-table>
-
+    <el-table
+        header-row-class-name="assetsClassName"
+        :data="userAssets"
+    >
+      <el-table-column fixed prop="coin_name" label="币种" />
+      <el-table-column prop="available_qty" label="可用数量" />
+      <el-table-column prop="frozen_qty" label="冻结数量" />
+    </el-table>
   </div>
 </template>
 
 <style scoped>
 :deep(.el-table) .asideTableClassName th{
+  font-size: 12px;
+  font-weight:normal;
+  padding:0;
+}
+:deep(.el-table) .assetsClassName th{
   font-size: 12px;
   font-weight:normal;
   padding:0;
