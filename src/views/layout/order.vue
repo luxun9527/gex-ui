@@ -21,18 +21,18 @@ const limitOrderSellFormRules =  reactive({
   qty: [{ required: true, trigger: "blur",validator: validateNumber  }],
 })
 
+const markerOrderBuyFormRef = $ref({})
+const markerOrderBuyForm = $ref({})
+const markerOrderBuyFormRules = reactive({
+  amount: [{ required: true, trigger: "blur", message: "市价单请输入金额" }],
+})
 
 const markerOrderSellFormRef = $ref({})
 const markerOrderSellForm = $ref({})
 const markerOrderSellFormRules =  reactive({
-  amount: [{ required: true, trigger: "blur", message: "市价单请输入金额" }],
-})
-
-const markerOrderBuyFormRef = $ref({})
-const markerOrderBuyForm = $ref({})
-const markerOrderBuyFormRules = reactive({
   qty: [{ required: true, trigger: "blur", message: "市价单请输入数量" }],
 })
+
 
 let activeName = $ref('lo')
 
@@ -104,6 +104,10 @@ const submitForm = async(orderType) => {
       data.order_type = mo
       valid = await  markerOrderBuyFormRef.validate()
       unref(markerOrderBuyFormRef).resetFields()
+      unref(markerOrderSellFormRef).resetFields()
+
+      //markerOrderBuyFormRef.value.resetFields()
+      //markerOrderBuyForm.amount=''
       break
     case moSell:
       data.qty = markerOrderSellForm.qty
@@ -135,7 +139,6 @@ const submitForm = async(orderType) => {
 const changeInput = (orderType,formField) => {
   switch (orderType){
     case loBuy:
-
       if(formField===formFieldPrice){
         //多个正则匹配
         limitOrderBuyForm.price = limitOrderBuyForm.price.replace(/[^0-9.]/g, '')
@@ -175,10 +178,26 @@ const changeInput = (orderType,formField) => {
 
       break
     case moBuy:
-      data.amount = markerOrderBuyForm.amount
+      if(formField===formFieldAmount){
+        //多个正则匹配
+        markerOrderBuyForm.amount = markerOrderBuyForm.amount.replace(/[^0-9.]/g, '')
+        markerOrderBuyForm.amount = markerOrderBuyForm.amount.replace(/^\./g, '')
+        //输入两个点删除一个
+        markerOrderBuyForm.amount =markerOrderBuyForm.amount.replace(/\.\./g, '.')
+        // .12. 的形式删除一个
+        markerOrderBuyForm.amount =markerOrderBuyForm.amount.replace(/(\.\d+)+\./g, '$1')
+      }
       break
     case moSell:
-      data.qty = markerOrderSellForm.qty
+      if(formField===formFieldQty){
+        //多个正则匹配
+        markerOrderSellForm.qty = markerOrderSellForm.qty.replace(/[^0-9.]/g, '')
+        markerOrderSellForm.qty = markerOrderSellForm.qty.replace(/^\./g, '')
+        //输入两个点删除一个
+        markerOrderSellForm.qty =markerOrderSellForm.qty.replace(/\.\./g, '.')
+        // .12. 的形式删除一个
+        markerOrderSellForm.qty =markerOrderSellForm.qty.replace(/(\.\d+)+\./g, '$1')
+      }
       break
   }
 
@@ -257,14 +276,14 @@ const changeInput = (orderType,formField) => {
       </el-tab-pane>
       <el-tab-pane label="市价委托" class="flex justify-between  items-center min-w-full" name="mo">
         <el-form class="min-w-p45 ml-8"  ref="markerOrderBuyFormRef" :model="markerOrderBuyForm" :rules="markerOrderBuyFormRules">
-          <el-form-item  prop="price">
+          <el-form-item  prop="amount">
             <el-input
                 size="large"
                 v-model="markerOrderBuyForm.amount"
                 placeholder="金额"
                 maxlength="30"
                 class="mb-2"
-                @input="changeInput(moBuy,formFieldPrice)"
+                @input="changeInput(moBuy,formFieldAmount)"
             />
           </el-form-item>
           <el-button

@@ -91,8 +91,7 @@ const depthDataHandler =(data)=>{
 
 
   asksFilledEmpty()
-  //处理卖盘
-  console.log( data.p.b)
+  //处理买
   data.p.b.forEach(d=>{
     let existed = false
     let pos = {}
@@ -130,6 +129,8 @@ const depthDataHandler =(data)=>{
       const v2Price = new Decimal(v2.price)
       return -v1Price.comparedTo(v2Price)
     })
+    //只保留15档删除多的
+    bids = bids.slice(0, 15)
   })
 }
 
@@ -173,11 +174,9 @@ const  asksListCell = ({rowIndex, columnIndex, row, column})=> {
 }
 onMounted(async ()=>{
   const d = await getTableData()
-
   asks = d.data.asks
   bids = d.data.bids
   asksFilledEmpty()
-  console.log(asks)
   subDepth()
 })
 
@@ -209,7 +208,6 @@ const  bidsListRow=({row, rowIndex})=> {
 
 <template>
   <div>
-
 
       <el-table
           header-row-class-name="asksTableClassName"

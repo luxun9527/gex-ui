@@ -30,7 +30,7 @@ const tickerHandler=(data)=>{
   tableData.forEach(el=>{
     if (el.symbol === data.p.s) {
       el.last_price=data.p.lp
-      el.price_range=data.p.r
+      el.price_range=data.p.r+"%"
     }
   })
   if (data.p.s === tickerStore.ticker.symbol) {
@@ -40,7 +40,7 @@ const tickerHandler=(data)=>{
       low: data.p.l,
       amount: data.p.a,
       volume: data.p.v,
-      price_range: data.p.r,
+      price_range: data.p.r+"%",
       last24_price: data.p.l24p,
       symbol: data.p.s
     }

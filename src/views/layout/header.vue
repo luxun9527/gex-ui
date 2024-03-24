@@ -26,7 +26,7 @@ const handleCommand = (command)=>{
         </div>
          <div class="header-item">
           <span>{{ticker.last_price}}</span>
-          <span>{{ticker.price_range}}</span>
+          <span>{{ticker.price_range}}%</span>
         </div>
         <div class="header-item">
           <span>24小时最低</span>
